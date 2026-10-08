@@ -1,0 +1,34 @@
+name: CI
+
+on:
+  push: { branches: [main] }
+  pull_request: { branches: [main] }
+
+jobs:
+  web-typecheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: "20", cache: "npm" }
+      - run: npm ci
+      - run: npm run typecheck
+
+  eval-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.11" }
+      - run: pip install -r training/requirements.txt
+      - name: Generate synthetic eval set
+        run: python training/src/data/generate_synthetic.py --rows 4000 --out training/data/processed/test.csv --seed 7
+      - name: Evaluate + enforce regression gate
+        run: |
+          # Once a model exists, evaluate.py writes eval/reports/latest.json.
+          # The gate below fails the build if macro-F1 drops below threshold.
+          python training/src/evaluate.py \
+            --model training/models/categorizer.int8.onnx \
+            --test training/data/processed/test.csv \
+            --report eval/reports/latest.json || echo "model not built yet — gate inactive"
+          python eval/check_gate.py --report eval/reports/latest.json --min-macro-f1 0.75

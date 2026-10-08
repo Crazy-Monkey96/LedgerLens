@@ -1,0 +1,16 @@
+{
+  "classes": [
+    "dining",
+    "entertainment",
+    "groceries",
+    "health",
+    "income",
+    "other",
+    "rent",
+    "shopping",
+    "transfer",
+    "transport",
+    "utilities"
+  ],
+  "dim": 4096
+}

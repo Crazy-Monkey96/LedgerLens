@@ -1,0 +1,17 @@
+# Training configuration
+seed: 42
+model:
+  embedding_dim: 64
+  hidden_dim: 128
+  char_ngram: 3
+train:
+  epochs: 10
+  batch_size: 256
+  lr: 0.001
+compress:
+  distill_hidden_dim: 48
+  quantize: int8
+paths:
+  train: data/processed/train.csv
+  test: data/processed/test.csv
+  out_dir: models

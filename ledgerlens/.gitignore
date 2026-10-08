@@ -1,0 +1,25 @@
+# deps
+node_modules/
+# build
+dist/
+.vite/
+# python
+__pycache__/
+*.pyc
+.venv/
+venv/
+training/.venv/
+# data & models (large / private — never commit real financial data)
+training/data/raw/
+training/data/processed/
+# ship only the quantised browser model; ignore training intermediates
+training/models/*.onnx
+*.fp32.onnx
+!public/models/categorizer.int8.onnx
+# local eval artifacts
+eval/reports/
+# os / editor
+.DS_Store
+.idea/
+.vscode/
+*.log
